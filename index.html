@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GST Calculator India - Add or Remove GST</title>
+    <meta name="description" content="Free online GST calculator for India. Instantly add or remove GST from any amount with variable standard rates. Calculate CGST, SGST, IGST for all GST slabs.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #000;
+            color: #fff;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        header {
+            background-color: #000;
+            border-bottom: 4px solid #dc2626;
+            padding: 1.5rem 0;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ef4444;
+            text-decoration: none;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+        
+        nav {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: #dc2626;
+        }
+        
+        main {
+            min-height: 80vh;
+            padding: 2rem 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        
+        .calculator-container {
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        @media (max-width: 768px) {
+            .calculator-container {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+        
+        .calculator {
+            background: #fff;
+            color: #000;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            border: 2px solid #dc2626;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .input-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .amount-input {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        .amount-input::before {
+            content: '₹';
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.25rem;
+            font-weight: bold;
+            z-index: 1;
+        }
+        
+        .amount-input input {
+            width: 100%;
+            padding: 12px 12px 12px 32px;
+            border: 2px solid #000;
+            border-radius: 0.25rem;
+            font-size: 1.25rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .results {
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background-color: #000;
+            color: #fff;
+            border-radius: 0.25rem;
+        }
+        
+        .result-value {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .copy-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 0.125rem;
+            transition: background-color 0.3s;
+        }
+        
+        .copy-btn:hover {
+            background-color: #374151;
+        }
+        
+        .number-pad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .number-btn {
+            height: 3rem;
+            font-size: 1.125rem;
+            font-weight: bold;
+            background-color: #000;
+            color: #fff;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .number-btn:hover {
+            background-color: #374151;
+        }
+        
+        .clear-btn {
+            background-color: #dc2626;
+        }
+        
+        .clear-btn:hover {
+            background-color: #b91c1c;
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .action-btn {
+            height: 3rem;
+            font-weight: bold;
+            border: 2px solid #000;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .action-btn.active {
+            background-color: #dc2626;
+            color: #fff;
+            border-color: #dc2626;
+        }
+        
+        .action-btn:not(.active) {
+            background-color: #fff;
+            color: #000;
+        }
+        
+        .action-btn:not(.active):hover {
+            background-color: #f3f4f6;
+        }
+        
+        .rate-section {
+            text-align: center;
+        }
+        
+        .rate-title {
+            font-weight: bold;
+            font-size: 1.125rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .rate-slider {
+            width: 100%;
+            margin-bottom: 0.75rem;
+        }
+        
+        .rate-input-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .rate-input {
+            width: 5rem;
+            text-align: center;
+            border: 2px solid #000;
+            border-radius: 0.25rem;
+            padding: 0.25rem;
+        }
+        
+        .info-card {
+            background: #fff;
+            color: #000;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            border: 2px solid #dc2626;
+            max-width: 500px;
+        }
+        
+        .info-card h1 {
+            color: #dc2626;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+        
+        .info-card p {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        
+        .highlight {
+            text-align: center;
+            margin: 3rem 0;
+        }
+        
+        .highlight p {
+            font-size: 1.25rem;
+            color: #ef4444;
+            font-weight: 600;
+        }
+        
+        .additional-content {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: #fff;
+            color: #000;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            border: 2px solid #dc2626;
+        }
+        
+        .additional-content h2 {
+            color: #dc2626;
+            margin: 2rem 0 1rem 0;
+        }
+        
+        .additional-content h3 {
+            color: #dc2626;
+            margin: 1.5rem 0 0.75rem 0;
+        }
+        
+        footer {
+            background-color: #111;
+            padding: 2rem 0;
+            margin-top: 3rem;
+            border-top: 2px solid #dc2626;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-section h3 {
+            color: #dc2626;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-section a:hover {
+            color: #ef4444;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #333;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="/" class="logo">eGSTCalculator</a>
+            <nav>
+                <a href="/">GST Calculator</a>
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="cookies.html">Cookie Policy</a>
+                <a href="contact.html">Contact Us</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="calculator-container">
+                <div class="calculator">
+                    <div class="input-section">
+                        <div class="amount-input">
+                            <input type="text" id="amount" placeholder="Enter amount">
+                        </div>
+                    </div>
+                    
+                    <div class="results">
+                        <div class="result-item">
+                            <span>Net (ex GST):</span>
+                            <div class="result-value">
+                                <span id="netAmount">₹0.00</span>
+                                <button class="copy-btn" onclick="copyToClipboard('net')">📋</button>
+                            </div>
+                        </div>
+                        <div class="result-item">
+                            <span>Gross (inc GST):</span>
+                            <div class="result-value">
+                                <span id="grossAmount">₹0.00</span>
+                                <button class="copy-btn" onclick="copyToClipboard('gross')">📋</button>
+                            </div>
+                        </div>
+                        <div class="result-item">
+                            <span>GST (at <span id="displayRate">18</span>%):</span>
+                            <div class="result-value">
+                                <span id="gstAmount">₹0.00</span>
+                                <button class="copy-btn" onclick="copyToClipboard('gst')">📋</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="number-pad">
+                        <button class="number-btn" onclick="addNumber('1')">1</button>
+                        <button class="number-btn" onclick="addNumber('2')">2</button>
+                        <button class="number-btn" onclick="addNumber('3')">3</button>
+                        <button class="number-btn" onclick="addNumber('4')">4</button>
+                        <button class="number-btn" onclick="addNumber('5')">5</button>
+                        <button class="number-btn" onclick="addNumber('6')">6</button>
+                        <button class="number-btn" onclick="addNumber('7')">7</button>
+                        <button class="number-btn" onclick="addNumber('8')">8</button>
+                        <button class="number-btn" onclick="addNumber('9')">9</button>
+                        <button class="number-btn clear-btn" onclick="clearInput()">C</button>
+                        <button class="number-btn" onclick="addNumber('0')">0</button>
+                        <button class="number-btn" onclick="addDecimal()">.</button>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="action-btn active" id="addBtn" onclick="setMode('add')">ADD GST</button>
+                        <button class="action-btn" id="removeBtn" onclick="setMode('remove')">REMOVE GST</button>
+                    </div>
+                    
+                    <div class="rate-section">
+                        <div class="rate-title">GST Rate</div>
+                        <input type="range" id="gstRate" class="rate-slider" min="0" max="30" value="18" step="0.5" oninput="updateRate()">
+                        <div class="rate-input-container">
+                            <input type="number" id="rateInput" class="rate-input" value="18" min="0" max="30" step="0.5" onchange="updateRateFromInput()">
+                            <span>%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h1>Instant Online GST / VAT Calculator for India</h1>
+                    <p data-start="66" data-end="327">The <strong data-start="70" data-end="88">eGSTCalculator</strong> is designed to simplify the calculation of <strong data-start="132" data-end="164">GST (Goods and Services Tax)</strong> and <strong data-start="169" data-end="176">VAT</strong> on invoices and receipts in India. With our easy-to-use tool, you can quickly add or remove tax from any amount using the standard <strong data-start="308" data-end="324">18% GST rate or any other rate</strong>.</p>
+                  <p data-start="329" data-end="417">To use the calculator, simply enter an amount and choose one of the following options:</p>
+                    <p data-start="420" data-end="498"><strong data-start="420" data-end="431">Add GST</strong>: calculates GST on the net amount and provides the gross total.</p>
+                    <p data-start="501" data-end="579"><strong data-start="501" data-end="515">Remove GST</strong>: extracts GST from the gross amount and shows the net value.</p>
+                    <p data-start="581" data-end="698">Both options display the <strong data-start="606" data-end="652">net amount, GST, and gross total instantly</strong>, making tax calculations fast and accurate.</p>
+                    <p data-start="700" data-end="854">Additionally, the GST rate can be adjusted to match different tax slabs (<strong data-start="773" data-end="794">5%, 12%, 18%, 28%</strong>) or specific goods and services under India&rsquo;s GST system.</p>
+                    <p>&nbsp;</p>
+                </div>
+            </div>
+            
+            <div class="highlight">
+                <p>This GST calculator is provided free to use - Please share it!</p>
+            </div>
+            
+            <div class="additional-content">
+                <p>The Goods and Services Tax (GST) in India was implemented on July 1, 2017, replacing multiple indirect taxes. The standard GST rate is 18%, with other rates at 5%, 12%, and 28% depending on the goods and services.</p>
+                <p>GST is a comprehensive indirect tax levied on the supply of goods and services in India. It has simplified the tax structure by subsuming various central and state taxes under a single umbrella, making it easier for businesses to comply with tax regulations.</p>
+                
+                <h2>About India e-GST Calculator</h2>
+                <p>Check out India e-GST Calculator in a simple way. You can calculate online Goods & Service Tax according to Indian GST Slabs i.e. 5%, 12%, 18%, 28%. GST Calculator is an important tool to calculate fast calculation on difficult goods and service items. GST which is well known as Good & Service Tax. The GST was applied from 01st July 2017. After GST implementation, people want to know about GST and its procedure. GST will replace indirect tax in India. The main motto of GST is removed curbing 'double-taxation' and irregularities regarding the same. The government has made four GST slabs or tax rates according to product and service type i.e. 5%, 12%, 18%, and 28%. India Central Government has passed four bills on 29 March 2017.</p>
+                
+                <h3>GST Calculator in India - Online e-GST Calculation</h3>
+                <p><strong>Note</strong> - We will provide GST Calculator Very soon. You can check out a demo example of GST calculation. In this table, we are comparing tax value in between GST and VAT (Value Added Tax). It is very common and general example of GST impact. It is including all GST taxes i.e. SGST and CGST.</p>
+                <p><strong>Example</strong> - We are taking the cost of production is 50,000/- INR with 12.5% VAT and 2% CST. The final cost is 1,06,127 under VAT. However same product with 12% IGST (SGST+CGST), it will 93,498. So here due to GST, the final price is reducing.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>eGSTCalculator</h3>
+                    <p>Free online GST calculator for India. Calculate GST instantly with our easy-to-use tool.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <a href="/">GST Calculator</a>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="cookies.html">Cookie Policy</a>
+                    <a href="contact.html">Contact Us</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <a href="mailto:egstcalculator@proton.me">egstcalculator@proton.me</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 eGSTCalculator. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let currentMode = 'add';
+        let currentRate = 18;
+        let results = { net: 0, gross: 0, gst: 0 };
+
+        function formatCurrency(value) {
+            return '₹' + value.toFixed(2);
+        }
+
+        function calculate() {
+            const amountInput = document.getElementById('amount').value;
+            const value = parseFloat(amountInput.replace(/[^0-9.]/g, '')) || 0;
+            
+            if (value === 0) {
+                results = { net: 0, gross: 0, gst: 0 };
+            } else {
+                let net, gross, gst;
+                
+                if (currentMode === 'add') {
+                    net = value;
+                    gst = net * (currentRate / 100);
+                    gross = net + gst;
+                } else {
+                    gross = value;
+                    net = gross / (1 + currentRate / 100);
+                    gst = gross - net;
+                }
+                
+                results = {
+                    net: Math.round(net * 100) / 100,
+                    gross: Math.round(gross * 100) / 100,
+                    gst: Math.round(gst * 100) / 100
+                };
+            }
+            
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            document.getElementById('netAmount').textContent = formatCurrency(results.net);
+            document.getElementById('grossAmount').textContent = formatCurrency(results.gross);
+            document.getElementById('gstAmount').textContent = formatCurrency(results.gst);
+            document.getElementById('displayRate').textContent = currentRate;
+        }
+
+        function addNumber(num) {
+            const amountInput = document.getElementById('amount');
+            amountInput.value += num;
+            calculate();
+        }
+
+        function addDecimal() {
+            const amountInput = document.getElementById('amount');
+            if (!amountInput.value.includes('.')) {
+                amountInput.value += '.';
+            }
+        }
+
+        function clearInput() {
+            document.getElementById('amount').value = '';
+            calculate();
+        }
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('addBtn').classList.toggle('active', mode === 'add');
+            document.getElementById('removeBtn').classList.toggle('active', mode === 'remove');
+            calculate();
+        }
+
+        function updateRate() {
+            currentRate = parseFloat(document.getElementById('gstRate').value);
+            document.getElementById('rateInput').value = currentRate;
+            calculate();
+        }
+
+        function updateRateFromInput() {
+            currentRate = parseFloat(document.getElementById('rateInput').value) || 0;
+            document.getElementById('gstRate').value = currentRate;
+            calculate();
+        }
+
+        async function copyToClipboard(type) {
+            let value;
+            switch(type) {
+                case 'net': value = results.net; break;
+                case 'gross': value = results.gross; break;
+                case 'gst': value = results.gst; break;
+            }
+            
+            try {
+                await navigator.clipboard.writeText(value.toString());
+            } catch (err) {
+                console.error('Failed to copy:', err);
+            }
+        }
+
+        // Allow manual input
+        document.getElementById('amount').addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/[^0-9.]/g, '');
+            calculate();
+        });
+
+        // Initialize
+        calculate();
+    </script>
+</body>
+</html>
